@@ -39,6 +39,51 @@ export class FilesService {
     const zipEntries = zip.getEntries();
     const filesToSave: File[] = [];
 
+    // Helper function to decode file content with proper encoding detection
+    const decodeFileContent = (buffer: Buffer): string | null => {
+      try {
+        // Check for UTF-16 LE BOM (FF FE)
+        if (buffer.length >= 2 && buffer[0] === 0xff && buffer[1] === 0xfe) {
+          const decoded = buffer.toString('utf16le');
+          // Remove BOM character if present
+          return decoded.charCodeAt(0) === 0xfeff ? decoded.slice(1) : decoded;
+        }
+
+        // Try UTF-8 first (most common for source files)
+        const utf8Content = buffer.toString('utf8');
+        
+        // Check if this is valid UTF-8 by checking if decoding + re-encoding gives same buffer
+        try {
+          const reencoded = Buffer.from(utf8Content, 'utf8');
+          if (reencoded.equals(buffer)) {
+            return utf8Content;
+          }
+        } catch {
+          // Not valid UTF-8
+        }
+
+        // If UTF-8 doesn't match, try UTF-16 LE (Windows encoding)
+        try {
+          const utf16Content = buffer.toString('utf16le');
+          // UTF-16 LE decoded strings should not have excessive null characters
+          // (null chars only appear between ASCII chars in the encoding, not in decoded string)
+          // Check if re-encoding produces similar buffer
+          const reencoded = Buffer.from(utf16Content, 'utf16le');
+          if (reencoded.equals(buffer)) {
+            return utf16Content;
+          }
+        } catch {
+          // Not UTF-16 LE
+        }
+
+        // If we get here, likely a binary file
+        return null;
+      } catch (error) {
+        console.error('Error decoding file:', error);
+        return null;
+      }
+    };
+
     // 2. Iterate through files in the ZIP archive
     for (const entry of zipEntries) {
       // Skip directory entries, empty entries, or systemic lockfiles
@@ -53,7 +98,20 @@ export class FilesService {
         continue;
       }
 
-      const content = entry.getData().toString('utf8');
+      // Skip binary files (images, executables, etc.)
+      const isBinaryFile = /\.(png|jpg|jpeg|gif|ico|pdf|zip|exe|bin|o|so|dylib)$/i.test(path);
+      if (isBinaryFile) {
+        continue;
+      }
+
+      const buffer = entry.getData();
+      const content = decodeFileContent(buffer);
+      
+      // Skip if content could not be decoded (likely binary)
+      if (!content) {
+        continue;
+      }
+
       const name = entry.name;
 
       const fileEntity = this.fileRepo.create({

@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Project } from '../projects/project.entity';
+import { Project } from '../projects/projects.entity';
 
 @Entity('users')//table
 export class User {

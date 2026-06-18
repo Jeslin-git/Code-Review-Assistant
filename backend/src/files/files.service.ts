@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { File } from '../files/file.entity';
-import { Project } from '../projects/project.entity';
+import { Project } from '../projects/projects.entity';
 import AdmZip from 'adm-zip';
 
 @Injectable()

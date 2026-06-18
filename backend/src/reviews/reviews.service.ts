@@ -83,10 +83,53 @@ export class ReviewsService {
         summary: aiContent.summary,
         issues: aiContent.issues,
       });
-
       return await this.reviewRepo.save(review);
     } catch (error: any) {
       throw new BadRequestException(`AI Processing Engine failed: ${error.message}`);
+    }
+  }
+
+  // Core Feature 7: Fetch historical review reports for a specific project
+  async getProjectHistory(projectId: string, userId: string): Promise<Review[]> {
+    // We search through the database ensuring owner-isolation remains secure
+    return this.reviewRepo.find({
+      where: { project: { id: projectId, userId } },
+      order: { createdAt: 'DESC' },
+    });
+  }
+
+  // Core Feature 8: Context-Aware Codebase Conversation Chat
+  async chatWithCode(projectId: string, userId: string, userMessage: string): Promise<{ response: string }> {
+    const config = await this.aiProviderRepo.findOne({ where: { userId, isActive: true } });
+    if (!config) throw new NotFoundException('No active AI provider configured.');
+
+    const files = await this.fileRepo.find({ where: { projectId } });
+    const codeContext = files.map(f => `--- File: ${f.path} ---\n${f.content}`).join('\n\n');
+
+    try {
+      const response = await fetch(`${config.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(config.apiKey && { Authorization: `Bearer ${config.apiKey}` }),
+        },
+        body: JSON.stringify({
+          model: config.modelName,
+          messages: [
+            {
+              role: 'system',
+              content: `You are an AI assistant built into a code review IDE. Use this codebase context to answer the user's questions clearly:\n\n${codeContext}`
+            },
+            { role: 'user', content: userMessage }
+          ],
+          temperature: 0.5
+        }),
+      });
+
+      const data = await response.json();
+      return { response: data.choices[0].message.content };
+    } catch (error:any) {
+      throw new BadRequestException(`AI Chat failed: ${error.message}`);
     }
   }
 }

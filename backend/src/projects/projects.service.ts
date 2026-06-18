@@ -34,4 +34,12 @@ export class ProjectsService {
     if (!project) throw new NotFoundException('Project not found');
     await this.projectRepo.remove(project);
   }
+
+  async findOne(userId: string, projectId: string): Promise<Project> {
+  const project = await this.projectRepo.findOne({
+    where: { id: projectId, user: { id: userId } },
+  });
+  if (!project) throw new NotFoundException('Project not found');
+  return project;
+}
 }

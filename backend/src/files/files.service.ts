@@ -7,12 +7,20 @@ import AdmZip from 'adm-zip';
 
 @Injectable()
 export class FilesService {
+  [x: string]: any;
   constructor(
     @InjectRepository(File)
     private readonly fileRepo: Repository<File>,
     @InjectRepository(Project)
     private readonly projectRepo: Repository<Project>,
   ) {}
+
+  async getFiles(projectId: string, userId: string): Promise<File[]> {
+  const project = await this.projectRepo.findOne({ where: { id: projectId, userId } });
+  if (!project) throw new NotFoundException('Project not found or unauthorized');
+
+  return this.fileRepo.find({ where: { projectId } });
+}
 
   async uploadZip(projectId: string, userId: string, fileBuffer: Buffer): Promise<{ count: number }> {
     // 1. Verify project exists and belongs to the active authenticated user

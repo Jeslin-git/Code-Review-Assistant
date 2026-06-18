@@ -22,4 +22,9 @@ export class ProjectsController {
   delete(@Request() req, @Param('id') id: string) {
     return this.projectsService.delete(req.user.id, id);
   }
+
+  @Get(':id')
+  findOne(@Request() req, @Param('id') id: string) {
+  return this.projectsService.findOne(req.user.id, id);
+}
 }

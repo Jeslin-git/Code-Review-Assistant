@@ -10,27 +10,27 @@ import { User } from '../auth/user.entity';
 @Entity('ai_providers')
 export class AIProvider {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string; // e.g., "LM Studio", "OpenAI"
+  name!: string; // e.g., "LM Studio", "OpenAI"
 
   @Column()
-  baseUrl: string; // e.g., "http://localhost:1234/v1"
+  baseUrl!: string; // e.g., "http://localhost:1234/v1"
 
   @Column({ nullable: true })
-  apiKey: string; // Nullable for local engines like Ollama/LM Studio
+  apiKey!: string; // Nullable for local engines like Ollama/LM Studio
 
   @Column()
-  modelName: string; // e.g., "mistral", "gpt-4o"
+  modelName!: string; // e.g., "mistral", "gpt-4o"
 
   @Column({ default: false })
-  isActive: boolean;
+  isActive!: boolean;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @Column()
-  userId: string;
+  userId!: string;
 }

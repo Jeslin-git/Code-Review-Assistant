@@ -14,27 +14,27 @@ import { Review } from '../reviews/review.entity';
 @Entity('projects')
 export class Project {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column({ nullable: true })
-  description: string;
+  description!: string;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @ManyToOne(() => User, (user) => user.projects, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user!: User;
 
   @Column()
-  userId: string;
+  userId!: string;
 
   @OneToMany(() => File, (file) => file.project)
-  files: File[];
+  files!: File[];
 
   @OneToMany(() => Review, (review) => review.project)
-  reviews: Review[];
+  reviews!: Review[];
 }

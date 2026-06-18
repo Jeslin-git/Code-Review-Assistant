@@ -11,24 +11,24 @@ import { Project } from '../projects/project.entity';
 @Entity('files')
 export class File {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  name: string;
+  name!: string;
 
   @Column()
-  path: string; // e.g., "src/auth/user.entity.ts" to build the tree structure
+  path!: string; // e.g., "src/auth/user.entity.ts" to build the tree structure
 
   @Column('text')
-  content: string; // The source code content used for AI context
+  content!: string; // The source code content used for AI context
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @ManyToOne(() => Project, (project) => project.files, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
-  project: Project;
+  project!: Project;
 
   @Column()
-  projectId: string;
+  projectId!: string;
 }

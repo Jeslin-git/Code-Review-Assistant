@@ -11,16 +11,16 @@ import { Project } from '../projects/project.entity';
 @Entity('reviews')
 export class Review {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  templateMode: string; // 'security' | 'performance' | 'quality'
+  templateMode!: string; // 'security' | 'performance' | 'quality'
 
   @Column('text')
-  summary: string; // High-level overview
+  summary!: string; // High-level overview
 
   @Column('jsonb')
-  issues: Array<{
+  issues!: Array<{
     filePath: string;
     line?: number;
     severity: 'critical' | 'high' | 'medium' | 'low';
@@ -29,12 +29,12 @@ export class Review {
   }>;
 
   @CreateDateColumn()
-  createdAt: Date;
+  createdAt!: Date;
 
   @ManyToOne(() => Project, (project) => project.reviews, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
-  project: Project;
+  project!: Project;
 
   @Column()
-  projectId: string;
+  projectId!: string;
 }

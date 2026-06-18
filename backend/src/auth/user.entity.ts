@@ -10,7 +10,7 @@ import { Project } from '../projects/project.entity';
 @Entity('users')//table
 export class User {
   @PrimaryGeneratedColumn('uuid')//primary key
-  id: string;
+  id: string ;
 
   @Column({ unique: true })
   email: string;

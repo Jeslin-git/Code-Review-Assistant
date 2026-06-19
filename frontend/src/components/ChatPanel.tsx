@@ -23,7 +23,7 @@ export default function ChatPanel({ projectId }: { projectId: string }) {
 
     try {
       const { data } = await api.post(`/reviews/chat/${projectId}`, { message: input });
-      setMessages((prev) => [...prev, { role: 'assistant', content: data.reply }]);
+      setMessages((prev) => [...prev, { role: 'assistant', content: data.response }]);
     } catch {
       setMessages((prev) => [...prev, { role: 'assistant', content: 'Failed to get a response.' }]);
     } finally {

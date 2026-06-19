@@ -47,13 +47,19 @@ export default function ReviewPanel({ projectId, files, selectedFile }: Props) {
     setError('');
     setResult(null);
     try {
+      console.log('Sending review request:', {
+        projectId,
+        templateMode: mode,
+        fileIds: scope === 'file' && selectedFile ? [selectedFile.id] : [],
+      });
       const { data } = await api.post('/reviews/trigger', {
         projectId,
-        fileId: scope === 'file' ? selectedFile?.id : undefined,
-        mode,
+        templateMode: mode,
+        fileIds: scope === 'file' && selectedFile ? [selectedFile.id] : [],
       });
       setResult(data);
-    } catch {
+    } catch (err: any) {
+      console.error('Review error:', err.response?.data || err.message);
       setError('Review failed. Check your AI provider config.');
     } finally {
       setLoading(false);

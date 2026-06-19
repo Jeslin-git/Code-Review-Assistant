@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import api from '@/lib/api';
 import { clearToken } from '@/lib/auth';
 import { FolderPlus, Trash2, LogOut, Code2, Calendar } from 'lucide-react';
@@ -89,13 +90,18 @@ export default function DashboardPage() {
             <Code2 className="h-6 w-6 text-blue-500" />
             <span className="font-bold text-lg text-white tracking-tight">CodeReview.AI</span>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-400 transition bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Sign Out</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <Link href="/settings" className="text-sm text-gray-400 hover:text-white transition bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700">
+              AI Settings
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center space-x-2 text-sm text-gray-400 hover:text-red-400 transition bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>Sign Out</span>
+            </button>
+          </div>
         </div>
       </header>
 

@@ -9,6 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@neon/config": "^1.8.6",
+    "@neon/env": "^1.5.3",
     "axios": "^1.18.0",
     "lucide-react": "^1.21.0",
     "next": "16.2.9",

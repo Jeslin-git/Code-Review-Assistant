@@ -13,16 +13,26 @@ import { AIProviderModule } from './ai-provider/ai-provider.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-   TypeOrmModule.forRoot({
-  type: 'postgres',
-  host: process.env.DATABASE_HOST ?? 'localhost',
-  port: parseInt(process.env.DATABASE_PORT ?? '5432'),
-  username: process.env.DATABASE_USER ?? 'postgres',
-  password: process.env.DATABASE_PASSWORD ?? '',
-  database: process.env.DATABASE_NAME ?? 'code_reviewer',
-  autoLoadEntities: true,
-  synchronize: true,
-}),
+   TypeOrmModule.forRoot(
+      process.env.DATABASE_URL
+        ? {
+            type: 'postgres',
+            url: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false },
+            autoLoadEntities: true,
+            synchronize: true,
+          }
+        : {
+            type: 'postgres',
+            host: process.env.DATABASE_HOST ?? 'localhost',
+            port: parseInt(process.env.DATABASE_PORT ?? '5432'),
+            username: process.env.DATABASE_USER ?? 'postgres',
+            password: process.env.DATABASE_PASSWORD ?? '',
+            database: process.env.DATABASE_NAME ?? 'code_reviewer',
+            autoLoadEntities: true,
+            synchronize: true,
+          },
+    ),
     AuthModule,
     FilesModule,
     ReviewsModule,

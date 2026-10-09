@@ -6,8 +6,13 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://codeai-swart.vercel.app'],
+    origin: [
+      'https://codeai-swart.vercel.app',
+      /^https:\/\/codeai-[a-z0-9]+-jeslins-projects-5f8dd491\.vercel\.app$/,
+      'http://localhost:3000',
+    ],
     credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
